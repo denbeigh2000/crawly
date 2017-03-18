@@ -5,7 +5,10 @@ type Processor struct {
 	newURLs     chan string
 	crawledURLs chan string
 
-	seen    map[string]struct{}
+	// Keeps a set of URLs that we've seen before
+	seen map[string]struct{}
+
+	// Keeps a set of URLs that are currently in the pipeline
 	tracker map[string]struct{}
 }
 
@@ -15,8 +18,12 @@ func (p *Processor) loop() {
 
 	for result := range p.in {
 		addedMore := false
-
 		delete(p.tracker, result.src)
+
+		// If the source is coming through this end of the pipeline, it would
+		// have had to have come from the other end, so we don't send this
+		// down the New URLs channel. This is primarily to address the edge case
+		// where the first URL of the entire crawl is fetched twice.
 		p.seen[result.src] = struct{}{}
 
 		for _, newUrl := range result.results {

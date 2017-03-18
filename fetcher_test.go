@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBasicFetching(t *testing.T) {
+func TestFetcherBasic(t *testing.T) {
 	assert := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -45,7 +45,7 @@ func TestBasicFetching(t *testing.T) {
 	assert.False(ok, "Result channel should have closed")
 }
 
-func TestDuplicatedURLFetching(t *testing.T) {
+func TestFetcherDuplicatedURL(t *testing.T) {
 	assert := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -94,7 +94,7 @@ func TestDuplicatedURLFetching(t *testing.T) {
 	assert.False(ok, "Result channel should have closed")
 }
 
-func TestErrorReporting(t *testing.T) {
+func TestFetcherErrorHandling(t *testing.T) {
 	err := assert.AnError
 	assert := assert.New(t)
 	ctrl := gomock.NewController(t)
