@@ -72,7 +72,6 @@ func (c *Crawly) URLs() <-chan string {
 func (c *Crawly) loop() {
 	newURLs := c.processor.New()
 	for url := range newURLs {
-		// log.Printf("Inserting newly-discovered URL (%v)\n", url)
 		c.in <- url
 	}
 }
