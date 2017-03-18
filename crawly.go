@@ -1,11 +1,15 @@
 package crawly
 
-import "log"
+import (
+	"log"
+	"sync"
+)
 
 type Crawly struct {
 	Concurrency int
 
-	in chan string
+	in      chan string
+	results chan FetchResult
 
 	Crawler
 
@@ -13,45 +17,62 @@ type Crawly struct {
 }
 
 func NewCrawly(start string, crawler Crawler, concurrency int) *Crawly {
-	in := make(chan string)
+	in := make(chan string, concurrency)
 	results := make(chan FetchResult)
-
-	p := NewProcessor(results)
-
-	for i := 0; i < concurrency; i++ {
-		f := NewFetcher(in, crawler)
-
-		go func(f Fetcher) {
-			fetcherResults := f.Results()
-			for result := range fetcherResults {
-				results <- result
-			}
-		}(f)
-
-		go func(f Fetcher, i int) {
-			errs := f.Errors()
-			for err := range errs {
-				log.Printf("Error from fetcher %v: %v", err, i)
-			}
-		}(f, i)
-	}
 
 	c := &Crawly{
 		Concurrency: concurrency,
 		Crawler:     crawler,
 
+		results: results,
+
 		in:        in,
-		processor: p,
+		processor: NewProcessor(results),
 	}
+
+	wg := &sync.WaitGroup{}
+	wg.Add(concurrency)
+	for i := 0; i < concurrency; i++ {
+		f := NewFetcher(in, crawler)
+		go c.processFetcherResults(f, wg)
+		go c.processFetcherErrors(f, i)
+	}
+
+	go c.loop()
+	go func() {
+		c.in <- start
+
+		wg.Wait()
+		close(in)
+	}()
 
 	return c
 }
 
-func (c *Crawly) loop() {
-	defer close(c.in)
+func (c *Crawly) processFetcherErrors(f Fetcher, i int) {
+	errs := f.Errors()
+	for err := range errs {
+		log.Printf("Error from fetcher %v: %v", err, i)
+	}
+}
 
+func (c *Crawly) processFetcherResults(f Fetcher, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	fetcherResults := f.Results()
+	for result := range fetcherResults {
+		c.results <- result
+	}
+}
+
+func (c *Crawly) URLs() <-chan string {
+	return c.processor.Crawled()
+}
+
+func (c *Crawly) loop() {
 	newURLs := c.processor.New()
 	for url := range newURLs {
+		// log.Printf("Inserting newly-discovered URL (%v)\n", url)
 		c.in <- url
 	}
 }

@@ -31,7 +31,9 @@ func (f Fetcher) loop() {
 	defer close(f.errors)
 
 	for url := range f.in {
+		// fmt.Printf("About to fetch %v\n", url)
 		urls, err := f.Crawler.Crawl(url)
+
 		if err != nil {
 			f.errors <- err
 		}
