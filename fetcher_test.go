@@ -104,14 +104,12 @@ func TestErrorReporting(t *testing.T) {
 
 	startPage := "www.somecompany.com"
 
-	t.Logf("Setup\n")
 	crawler.EXPECT().Crawl(startPage).Return(nil, err).Times(1)
 
 	urls := make(chan string)
 
 	fetcher := NewFetcher(urls, crawler)
 
-	t.Logf("Sending URL\n")
 	urls <- startPage
 	close(urls)
 
