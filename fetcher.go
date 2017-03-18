@@ -31,16 +31,19 @@ func (f Fetcher) loop() {
 	defer close(f.errors)
 
 	for url := range f.in {
-		// fmt.Printf("About to fetch %v\n", url)
 		urls, err := f.Crawler.Crawl(url)
 
+		var results []string
 		if err != nil {
 			f.errors <- err
+			results = nil
+		} else {
+			results = filterUniqueStrings(urls)
 		}
 
 		f.out <- FetchResult{
 			src:     url,
-			results: urls,
+			results: results,
 		}
 	}
 }
@@ -51,4 +54,17 @@ func (f Fetcher) Results() <-chan FetchResult {
 
 func (f Fetcher) Errors() <-chan error {
 	return f.errors
+}
+
+func filterUniqueStrings(in []string) (out []string) {
+	seen := make(map[string]struct{}, len(in))
+
+	for _, url := range in {
+		if _, ok := seen[url]; !ok {
+			out = append(out, url)
+			seen[url] = struct{}{}
+		}
+	}
+
+	return
 }

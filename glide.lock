@@ -1,0 +1,12 @@
+hash: fbfe8ce012ff88bec6342df098432ebb4d1141d57f9ae64c3b802a7433e76a9b
+updated: 2017-03-18T14:29:14.997634666-07:00
+imports:
+- name: github.com/golang/mock
+  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
+  subpackages:
+  - gomock
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
+testImports: []
