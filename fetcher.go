@@ -17,8 +17,8 @@ type Fetcher struct {
 func NewFetcher(urls <-chan string, c Crawler) Fetcher {
 	f := Fetcher{
 		in:      urls,
-		out:     make(chan FetchResult),
-		errors:  make(chan error),
+		out:     make(chan FetchResult, 20),
+		errors:  make(chan error, 5),
 		Crawler: c,
 	}
 

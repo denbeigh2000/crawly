@@ -27,10 +27,13 @@ func (p *Processor) loop() {
 		p.seen[result.src] = struct{}{}
 
 		for _, newUrl := range result.results {
+			if newUrl == "" {
+				continue
+			}
 			if _, ok := p.seen[newUrl]; !ok {
 				p.seen[newUrl] = struct{}{}
-				p.tracker[newUrl] = struct{}{}
 				p.newURLs <- newUrl
+				p.tracker[newUrl] = struct{}{}
 				addedMore = true
 			}
 		}
@@ -48,8 +51,8 @@ func (p *Processor) loop() {
 func NewProcessor(in <-chan FetchResult) *Processor {
 	p := &Processor{
 		in:          in,
-		newURLs:     make(chan string),
-		crawledURLs: make(chan string),
+		newURLs:     make(chan string, 5),
+		crawledURLs: make(chan string, 20),
 
 		seen:    make(map[string]struct{}),
 		tracker: make(map[string]struct{}),

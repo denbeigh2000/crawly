@@ -64,10 +64,12 @@ func main() {
 		log.Panic("Concurrency must be at least 1, got %v", *concurrency)
 	}
 	if *start == "" {
-		log.Panic("Must ptrovide a start URL", *concurrency)
+		log.Panic("Must provide a start URL", *concurrency)
 	}
 
-	c := crawly.NewCrawly("http://www.somecompany.com", defaultCrawler, *concurrency)
+	crawler := crawly.HTMLCrawler{}
+
+	c := crawly.NewCrawly(*start, crawler, *concurrency)
 
 	urls := c.URLs()
 	for url := range urls {

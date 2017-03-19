@@ -17,8 +17,8 @@ type Crawly struct {
 }
 
 func NewCrawly(start string, crawler Crawler, concurrency int) *Crawly {
-	in := make(chan string, concurrency)
-	results := make(chan FetchResult)
+	in := make(chan string, concurrency*3)
+	results := make(chan FetchResult, 20)
 
 	c := &Crawly{
 		Concurrency: concurrency,
@@ -43,6 +43,7 @@ func NewCrawly(start string, crawler Crawler, concurrency int) *Crawly {
 		c.in <- start
 
 		wg.Wait()
+		log.Println("Waited long enough")
 		close(in)
 	}()
 

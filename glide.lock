@@ -1,12 +1,22 @@
-hash: fbfe8ce012ff88bec6342df098432ebb4d1141d57f9ae64c3b802a7433e76a9b
-updated: 2017-03-18T14:29:14.997634666-07:00
+hash: d95ee14ee6a8046b2596ec2f4915ecc42823f682d56f7953680a4141e2198175
+updated: 2017-03-18T16:26:40.995879637-07:00
 imports:
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
   - gomock
+- name: github.com/PuerkitoBio/goquery
+  version: e1271ee34c6a305e38566ecd27ae374944907ee9
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
-testImports: []
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
