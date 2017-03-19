@@ -1,5 +1,7 @@
 # crawly
 
+[![Build Status](https://travis-ci.org/denbeigh2000/crawly.svg?branch=master)](https://travis-ci.org/denbeigh2000/crawly)
+
 This is a simple web crawler exercise written in Go.
 
 It really crawls the web!
