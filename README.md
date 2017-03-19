@@ -6,5 +6,10 @@ It really crawls the web!
 
 Can be used like this:
 ```
-$ crawly --concurrency 10 --start-at https://wikipedia.org/
-``
+$ crawly --concurrency 10 --start-at https://www.dropbox.com/
+```
+
+In action:
+![In action](http://i.imgur.com/R8a1Eeg.png)
+
+(sorry dropbox pls no hate)
